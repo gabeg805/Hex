@@ -12,12 +12,12 @@ Documentation
 
 This program works in the following way:
     
-    $ hex -h 1234
+    $ ./hex -h 1234
     Decimal: 4660
     Hex:	 0x1234
     Binary:	 0001 0010 0011 0100
     
-    $ hex -d 1234
+    $ ./hex -d 1234
     Decimal: 1234
     Hex:	 0x4d2
     Binary:	 0100 1101 0010
