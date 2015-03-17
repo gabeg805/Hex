@@ -39,7 +39,7 @@ with:
     
     $ rm hex
     $ gcc hex.c -o hex
-    $ export PATH="${PATH}":"/PATH/TO/PROGRAM/hex
+    $ export PATH="${PATH}":"/PATH/TO/PROGRAM/hex"
 
 Now the program is ready for use!
 
