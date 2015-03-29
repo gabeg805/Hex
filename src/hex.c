@@ -16,7 +16,7 @@
 // 
 // SYNTAX: 
 // 
-//     hex [-h|--help] [[-dec] [-hex] <value>]
+//     hex [-h|--help] [[-D|--dec] [-H|--hex] <value>]
 // 
 // 
 // PURPOSE:
@@ -30,14 +30,13 @@
 //     -h, --help 
 //         Print program usage.
 // 
-//     -dc, --dec
-//         Treat input value as a decimal value. 
+//     -D, --dec <value>
+//         Treat input value as a decimal value and print decimal, hex, and binary 
+//         representation.
 // 
-//     -hx, --hex
-//         Treat input value as a hex value.
-// 
-//     <value>
-//         Input value to convert.
+//     -H, --hex <value>
+//         Treat input value as a hex value and print decimal, hex, and binary 
+//         representation.
 // 
 // 
 // FUNCTIONS:
@@ -72,6 +71,9 @@
 //     gabeg Mar 27 2015 <> Changed layout of code and added a function to parse 
 //                          command line arguments.
 //     
+//     gabeg Mar 29 2015 <> Changed input parameters that specify decimal and hex
+//                          input value representation.
+//     
 // **********************************************************************************
 
 
@@ -91,7 +93,7 @@
 
 // Print program usage
 void print_usage() {
-    printf("%s\n", "Usage: hex [-h|--help] [[-dec] [-hex] <value>]");
+    printf("%s\n", "Usage: hex [-h|--help] [[-D|--dec] [-H|--hex] <value>]");
 }
 
 
@@ -156,10 +158,10 @@ int cli_arg_parse(int argc, char **argv) {
         if ( (strcmp(argv[i], "-h") == 0) || (strcmp(argv[i], "--help") == 0) )
             return 0;
         
-        if ( strcmp(argv[i], "-dec") == 0 )
+        if ( (strcmp(argv[i], "-D") == 0) || (strcmp(argv[i], "--dec") == 0) )
             return 1;
         
-        if ( strcmp(argv[i], "-hex") == 0 )
+        if ( (strcmp(argv[i], "-H") == 0) || (strcmp(argv[i], "--hex") == 0) )
             return 2;
         
         ++i;
@@ -224,10 +226,10 @@ int main(int argc, char **argv) {
     
     switch ( convert ) {
     case 1:
-        num = strtohex(argv[2]);
+        num = atoll(argv[2]);
         break;
     case 2: 
-        num = atoll(argv[2]);
+        num = strtohex(argv[2]);
         break;
     default:
         print_usage();

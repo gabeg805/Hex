@@ -38,8 +38,14 @@ Recompile the binary and update your PATH environment variable in your shell rc 
 with:
     
     $ rm hex
-    $ gcc hex.c -o hex
+    $ make
     $ export PATH="${PATH}":"/PATH/TO/PROGRAM/hex"
+
+Note: You can also compile the source file, simply with:
+
+    $ gcc -g -Wall src/hex.c -o hex
+
+Both ways are acceptable. 
 
 Now the program is ready for use!
 

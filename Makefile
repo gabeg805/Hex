@@ -10,7 +10,7 @@ OBJECTS = $(addprefix ./obj/, $(addsuffix .o, $(NAMES)))
 all: $(PROGRAM)
 
 ./obj/%.o: ./src/%.c 
-	$(CC) $(CFLAGS) -o $@ -c $<
+	$(CC) $(CFLAGS) -c $< -o $@ 
 
 $(PROGRAM): $(OBJECTS)
 	$(CC) $(CFLAGS) $(OBJECTS) -o $(PROGRAM) 
