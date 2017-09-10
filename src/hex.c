@@ -1,245 +1,195 @@
-// 
-// CONTRIBUTORS: 
-// 
-//     * Gabriel Gonzalez (gabeg@bu.edu) 
-// 
-// 
-// LICENSE: 
-// 
-//     The MIT License (MIT)
-// 
-// 
-// NAME:
-// 
-//     hex.c - Print input in its decimal, hexadecimal, and binary interpretation.
-// 
-// 
-// SYNTAX: 
-// 
-//     hex [-h|--help] [[-D|--dec] [-H|--hex] <value>]
-// 
-// 
-// PURPOSE:
-// 
-//     Takes the input value and prints the decimal, hex, and binary form of the 
-//     value.
-// 
-// 
-// KEYWORDS:
-// 
-//     -h, --help 
-//         Print program usage.
-// 
-//     -D, --dec <value>
-//         Treat input value as a decimal value and print decimal, hex, and binary 
-//         representation.
-// 
-//     -H, --hex <value>
-//         Treat input value as a hex value and print decimal, hex, and binary 
-//         representation.
-// 
-// 
-// FUNCTIONS:
-// 
-//     print_usage - Print program usage.
-// 
-//     strtohex    - Convert input string into literal hexadecimal.
-// 
-//     print_dec   - Print the decimal interpretation of the input string.
-//     print_hex   - Print the hexadecimal interpretation of the input string.
-//     print_bin   - Print the binary interpretation of the input string.
-// 
-// 
-// FILE STRUCTURE:
-// 
-//     * Print Program Usage
-//     * Value Conversion
-//     * Print Value
-//     * Display Value In Decimal, Hex, and Binary
-// 
-// 
-// MODIFICATION HISTORY:
-// 	
-//     gabeg Nov 25 2014 <> Created.
-//     
-//     gabeg Nov 30 2014 <> Added comments and functions to make code look cleaner. 
-//                          Also implemented the hex conversions, before only decimal 
-//                          was working.
-// 
-//     gabeg Jan 14 2015 <> Updated the documentation for the program.
-//     
-//     gabeg Mar 27 2015 <> Changed layout of code and added a function to parse 
-//                          command line arguments.
-//     
-//     gabeg Mar 29 2015 <> Changed input parameters that specify decimal and hex
-//                          input value representation.
-//     
-// **********************************************************************************
+/* *****************************************************************************
+ * 
+ * Name:    NAME
+ * Author:  Gabriel Gonzalez
+ * Email:   gabeg@bu.edu
+ * License: The MIT License (MIT)
+ * 
+ * Syntax: hex [option] <arg>
+ * 
+ * Description: Print input in its decimal, hexadecimal, and binary 
+ *              interpretations.
+ * 
+ * Notes: NOTES
+ * 
+ * *****************************************************************************
+ */
 
+/* Includes */
+#include "hex.h"
 
+/* Defines */
+#define PROG "hex"
 
-// =====================
-// INCLUDES AND DECLARES
-// =====================
+/* Private functions */
+static void usage(void);
+static void printdec(long long value);
+static void printhex(long long value);
+static void printbin(long long value);
+static long long strtohex(char *str);
 
-// Includes
-#include "../hdr/hex.h"
+/* ************************************************************************** */
+/* Main */
+int main(int argc, char **argv)
+{
+    /* Check if no arguments given */
+    if (argc == 1) {
+        usage();
+        exit(0);
+    }
 
+    /* Command line options */
+    const char *shortopts = "hD:H:";
+    struct option longopts[] = {
+        {"help", no_argument,       0,  'h' },
+        {"dec",  required_argument, 0,  'D' },
+        {"hex",  required_argument, 0,  'H' },
+        {0,      0,                 0,   0  }
+    };
 
+    /* Options */
+    bool      decimal = false;
+    bool      hex     = false;
+    long long value;
 
-// ///////////////////////////////
-// ///// PRINT PROGRAM USAGE /////
-// ///////////////////////////////
+    /* Parse options */
+    int index = 0;
+    int opt;
 
-// Print program usage
-void print_usage() {
-    printf("%s\n", "Usage: hex [-h|--help] [[-D|--dec] [-H|--hex] <value>]");
-}
-
-
-
-// ///////////////////////
-// ///// PRINT VALUE /////
-// ///////////////////////
-
-// Print integer in decimal format
-void print_dec(long long dec) {
-    printf("Decimal: %lld\n", dec);
-}
-
-
-
-// Print integer in hex format
-void print_hex(long long hex) {
-    printf("Hex:\t 0x%llx\n", hex);
-}
-
-
-
-// Print integer in binary format
-void print_bin(long long bin) {
-    long long val;
-    short count = 32;
-    short index = 0;
-    char flag = 0;
-    char chunk[5] = {'0', '0', '0', '0', 0};
-    
-    printf("Binary:\t ");
-    while ( count >= 0 ) {
-        val = (bin >> (count-1)) & 0x1;
-        
-        if ( index == 4 ) {
-            if ( flag || strcmp(chunk, "0000") ) {
-                printf("%s ", chunk);
-                flag = 1;
-            }
-            index = 0;
+    while ((opt=getopt_long(argc, argv, shortopts, longopts, &index)) != -1)
+    {
+        switch (opt) {
+        case 'h':
+            usage();
+            exit(0);
+        case 'D':
+            decimal = true;
+            value   = atoll(optarg);
+            break;
+        case 'H':
+            hex   = true;
+            value = strtohex(optarg);
+            break;
+        default:
+            usage(); 
+            exit(1);
         }
-        
-        chunk[index] = val+'0';
-        ++index;
-        --count;
     }
-    
-    printf("\n");
-}
 
-
-
-// ////////////////////////////////////////
-// ///// PARSE COMMAND LINE ARGUMENTS /////
-// ////////////////////////////////////////
-
-// Parse the command line arguments
-int cli_arg_parse(int argc, char **argv) {
-    int i = 0;
-    
-    while ( i < argc ) {
-        if ( (strcmp(argv[i], "-h") == 0) || (strcmp(argv[i], "--help") == 0) )
-            return 0;
-        
-        if ( (strcmp(argv[i], "-D") == 0) || (strcmp(argv[i], "--dec") == 0) )
-            return 1;
-        
-        if ( (strcmp(argv[i], "-H") == 0) || (strcmp(argv[i], "--hex") == 0) )
-            return 2;
-        
-        ++i;
+    /* Check arguments */
+    unsigned short argcheck = decimal + hex;
+    if (argcheck > 1) {
+        fprintf(stderr, "%s: Too many options entered.\n", PROG);
+        exit(1);
     }
-    
-    printf("Error: Invalid arguments.\n");
-    
+
+    /* Run entered option */
+    printdec(value);
+    printhex(value);
+    printbin(value);
+
     return 0;
 }
 
+/* ************************************************************************** */
+/* Print program usage */
+static void usage(void)
+{
+    printf("Usage: hex [options] <args>\n");
+    printf("\n");
+    printf("Options:\n");
+    printf("    -h, --help\n");
+    printf("        Print program usage.\n");
+    printf("\n");
+    printf("    -D, --dec <value>\n");
+    printf("        Input is treated as a decimal value. Print decimal, hex,\n");
+    printf("        and binary representation.\n");
+    printf("\n");
+    printf("    -H, --hex <value>\n");
+    printf("        Input is treated as a hex value. Print decimal, hex, and\n");
+    printf("        binary representation.\n");
+    printf("\n");
+    printf("Arguments:\n");
+    printf("    <value>\n");
+    printf("        An integer or hex value.\n");
+}
 
+/* ************************************************************************** */
+/* Print integer in decimal format */
+static void printdec(long long value)
+{
+    printf("%-8s: %lld\n", "Decimal", value);
+}
 
-// ////////////////////////////
-// ///// VALUE CONVERSION /////
-// ////////////////////////////
+/* ************************************************************************** */
+/* Print integer in hex format */
+static void printhex(long long value)
+{
+    printf("%-8s: 0x%llx\n", "Hex", value);
+}
 
-// Convert input string into literal hexadecimal
-long long strtohex(char *str) {
-    
-    // Initialize variables
-    int i, sub,
-        start = 0,
-        len = strlen(str);
-    long long ret = 0;
-    
-    // Set values according to string length 
-    if ( len == 1 )
-        return str[0];
-    else if ( len > 2 ) 
-        if ( (str[0] == '0') && ( (str[1] == 'x') || (str[1] == 'X') ) )
+/* ************************************************************************** */
+/* Print integer in binary format */
+static void printbin(long long value)
+{
+    long long binval;
+    char  binstr[5] = {'0', '0', '0', '0', 0};
+    char  flag = 0;
+    short word = 32;
+    short i    = 0;
+
+    printf("%-8s: ", "Binary");
+    while (word >= 0) {
+        binval = (value >> (word-1)) & 0x1;
+
+        if ((i%4) == 0) {
+            if (flag || strcmp(binstr, "0000")) {
+                printf("%s ", binstr);
+                flag = 1;
+            }
+        }
+
+        binstr[i%4] = binval+'0';
+        ++i;
+        --word;
+    }
+
+    printf("\n");
+}
+
+/* ************************************************************************** */
+/* Convert input string into literal hexadecimal */
+static long long strtohex(char *str)
+{
+    size_t len   = strlen(str);
+    size_t start = 0;
+
+    /* Set string starting point based on string length */
+    switch (len) {
+    case 0:
+        return 0LL;
+    case 1: 
+        return (long long) str[0];
+    default:
+        if ((str[0] == '0') && ((str[1] == 'x') || (str[1] == 'X')))
             start = 2;
-    
-    // Loop through string chars
-    for ( i = start; i < len; ++i ) {
+        break;
+    }
+
+    long long hex = 0;
+    int sub;
+    int i;
+
+    /* Loop through string chars */
+    for (i=start; i < len; ++i) {
         if ( str[i] >= 'a' )
             sub = 'a' - 10;
         else if ( str[i] >= 'A' )
             sub = 'A' - 10;
         else
             sub = '0';
-        
-        ret = (ret << 4) + str[i] - sub;
+        hex = (hex << 4) + str[i] - sub;
     }
-    
-    return ret;
-}
 
-
-
-// /////////////////////////////////////////////////////
-// ///// DISPLAY VALUE IN DECIMAL, HEX, AND BINARY /////
-// /////////////////////////////////////////////////////
-
-// Convert value to decimal, hex, and binary and print result
-int main(int argc, char **argv) {
-    
-    // Parse command line arguments
-    int convert = cli_arg_parse(argc, argv);
-    
-    // Determine input value
-    long long num = 0;
-    
-    switch ( convert ) {
-    case 1:
-        num = atoll(argv[2]);
-        break;
-    case 2: 
-        num = strtohex(argv[2]);
-        break;
-    default:
-        print_usage();
-        return 1;
-    }
-    
-    // Print value conversions
-    print_dec(num);
-    print_hex(num);
-    print_bin(num);
-    
-    return 0;
+    return hex;
 }

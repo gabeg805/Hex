@@ -1,21 +1,41 @@
+# Project name
+PROJECT = hex
+
+# Compiler settings
 CC      = gcc
-CFLAGS  = -g -Wall -O2
+LIBS    =
+CFLAGS  = -g -Wall
 
-PROGRAM = hex
-NAMES = $(PROGRAM)
-SOURCES = $(addprefix ./src/, $(addsuffix .c, $(NAMES)))
-HEADERS = $(addprefix ./hdr/, $(addsuffix .h, $(NAMES)))
-OBJECTS = $(addprefix ./obj/, $(addsuffix .o, $(NAMES)))
+# Directories
+BUILDDIR = .
+SRCDIR   = $(BUILDDIR)/src
+OBJDIR   = $(BUILDDIR)/obj
+INCDIR   = $(BUILDDIR)/include
 
-all: $(PROGRAM)
+# Files
+SRC = $(wildcard $(SRCDIR)/*.c)
+OBJ = $(SRC:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
 
-./obj/%.o: ./src/%.c 
-	$(CC) $(CFLAGS) -c $< -o $@ 
+# Redefine compiler settings
+LIBS += -I $(INCDIR)
 
-$(PROGRAM): $(OBJECTS)
-	$(CC) $(CFLAGS) $(OBJECTS) -o $(PROGRAM) 
+# Default target
+all: $(PROJECT)
 
+install: all
+
+# Compile targets
+$(PROJECT): $(OBJ)
+	$(CC) $(CFLAGS) \
+		-o $(PROJECT) $(OBJ)
+
+$(OBJDIR)/%.o: $(SRCDIR)/%.c 
+	$(CC) $(CFLAGS) $(LIBS) \
+		-c $< \
+		-o $@
+
+# Phony targets
 .PHONY: clean
 clean : 
-	@rm -v -f $(OBJECTS)
-	@rm -v -f $(PROGRAM)
+	@rm -v -f $(OBJ)
+	@rm -v -f $(PROJECT)

@@ -1,74 +1,43 @@
-===========
-What is it?
-===========
+# HEX
+
+## What is it?
 
 Convert the input string into its decimal, hexadecimal, and binary interpretation.
 
+## Example
 
+Running the *--dec* option, the output looks like the following:
+```
+$ ./hex --dec 1234
+Decimal: 1234
+Hex:	 0x4d2
+Binary:	 0100 1101 0010
+```
 
-=============
-Documentation
-=============
+Conversely, running the *--hex* option, the output looks like:
+```
+$ ./hex --hex 0x1234
+Decimal: 4660
+Hex:	 0x1234
+Binary:	 0001 0010 0011 0100
+```
 
-This program works in the following way:
-    
-    $ ./hex -h 1234
-    Decimal: 4660
-    Hex:	 0x1234
-    Binary:	 0001 0010 0011 0100
-    
-    $ ./hex -d 1234
-    Decimal: 1234
-    Hex:	 0x4d2
-    Binary:	 0100 1101 0010
+## Installation
 
-If the input method is hexadecimal, the input string is converted into literal 
-hexadecimal. On the other hand, if the input method is decimal, the input string is
-converted into decimal.
+To install, run the command:
+```
+$ make
+```
 
-Further, program documentation can be found in the header of the program.
+or:
+```
+$ make install
+```
 
+Now the program is ready to use!
 
+## To-Do
 
-============
-Installation
-============
-
-Recompile the binary and update your PATH environment variable in your shell rc file
-with:
-    
-    $ rm hex
-    $ make
-    $ export PATH="${PATH}":"/PATH/TO/PROGRAM/hex"
-
-Note: You can also compile the source file, simply with:
-
-    $ gcc -g -Wall src/hex.c -o hex
-
-Both ways are acceptable. 
-
-Now the program is ready for use!
-
-
-
-========
-Contacts
-========
-
-If you have any problems, feel free to email me at 'gabeg@bu.edu'.
-
-
-
-==================
-Potential Problems
-==================
-
-- TBD
-
-
-
-=====
-To-Do
-=====
-
-- Add a "-b" option for binary input.
+```
+- Add a --bin option to accept binary input
+```
