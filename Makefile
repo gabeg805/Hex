@@ -31,8 +31,8 @@ $(PROJECT): $(OBJ)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c 
 	$(CC) $(CFLAGS) $(LIBS) \
-		-c $< \
-		-o $@
+		-o $@ \
+		-c $<
 
 # Phony targets
 .PHONY: clean
