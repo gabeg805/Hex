@@ -17,7 +17,7 @@ SRC = $(wildcard $(SRCDIR)/*.c)
 OBJ = $(SRC:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
 
 # Redefine compiler settings
-LIBS += -I $(INCDIR)
+LIBS += -I$(INCDIR)
 
 # Default target
 all: $(PROJECT)
