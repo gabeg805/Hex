@@ -37,7 +37,7 @@ Binary:	 0001 0010 0011 0100
 Running the *--bin* option, the output looks like:
 
 ```
-$ ./hex -B "100010000"
+$ ./hex -B 100010000
 Decimal : 272
 Hex     : 0x110
 Binary  : 0001 0001 0000
