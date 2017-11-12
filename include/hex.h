@@ -33,8 +33,13 @@
 
 /* Defines */
 #define PROGRAM   "hex"
-#define WORD_SIZE 16
 
+/* Define word size if not set */
+#ifndef WORD_SIZE
+#define WORD_SIZE 32
+#endif
+
+/* Determine integer type based on word size */
 #if WORD_SIZE == 8
 #define INTWORD_T int8_t
 #elif WORD_SIZE == 16

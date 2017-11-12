@@ -14,7 +14,7 @@ Hex:	 0x4d2
 Binary:	 0100 1101 0010
 ```
 
-Conversely, running the *--hex* option, the output looks like:
+Running the *--hex* option, the output looks like:
 ```
 $ ./hex --hex 0x1234
 Decimal: 4660
@@ -22,22 +22,40 @@ Hex:	 0x1234
 Binary:	 0001 0010 0011 0100
 ```
 
+Note: The input value does not need to have "0x" preceeding it. The following
+will also work.
+
+```
+$ ./hex --hex 1234
+Decimal: 4660
+Hex:	 0x1234
+Binary:	 0001 0010 0011 0100
+```
+
+Running the *--bin* option, the output looks like:
+$ ./hex -B "100010000"
+Decimal : 272
+Hex     : 0x110
+Binary  : 0001 0001 0000
+
+Note: The input value does not need to have "0x" preceeding it. The following
+will also work.
+
+$ ./hex -B "1 0001 0000"
+Decimal : 272
+Hex     : 0x110
+Binary  : 0001 0001 0000
+
 ## Installation
 
 To install, run the command:
 ```
-$ make
+make
 ```
 
-or:
-```
-$ make install
-```
+## Uninstall
 
-Now the program is ready to use!
-
-## To-Do
-
+To uninstall, run the command:
 ```
-- Add a --bin option to accept binary input
+make clean
 ```

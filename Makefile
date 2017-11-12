@@ -3,10 +3,15 @@
 PROJECT = hex
 
 # ------------------------------------------------------------------------------
+# Options
+WORD_SIZE = 32
+
+# ------------------------------------------------------------------------------
 # Compiler settings
 CC      = gcc
 CFLAGS  = -g -Wall
 LIBS    =
+DEFS    = -DWORD_SIZE=$(WORD_SIZE)
 
 # ------------------------------------------------------------------------------
 # Directories
@@ -35,8 +40,8 @@ $(PROJECT): $(OBJDIR) $(OBJ)
 $(OBJDIR):
 	@mkdir -pv $(OBJDIR)
 
-$(OBJDIR)/%.o: $(SRCDIR)/%.c 
-	$(CC) $(CFLAGS) $(LIBS) \
+$(OBJDIR)/%.o: $(SRCDIR)/%.c
+	$(CC) $(CFLAGS) $(LIBS) $(DEFS) \
 		-o $@ \
 		-c $<
 
