@@ -43,8 +43,8 @@ Hex     : 0x110
 Binary  : 0001 0001 0000
 ```
 
-Note: The input value does not need to have "0x" preceeding it. The following
-will also work.
+Note: The input value can have spaces separting the digits. The following will
+also work.
 
 ```
 $ ./hex -B "1 0001 0000"
